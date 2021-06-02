@@ -6,20 +6,11 @@
     android:orientation="vertical"
     tools:context=".MonthCalendarFragment">
 
-    <LinearLayout
+    <GridView
+        android:id="@+id/calendar_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <GridView
-            android:id="@+id/calendar_gridview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:numColumns="7"
-        >
-
-        </GridView>
-    </LinearLayout>
+        android:numColumns="7"
+        />
 
 </LinearLayout>
