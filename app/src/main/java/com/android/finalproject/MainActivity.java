@@ -6,10 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -22,6 +26,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.main_container, new MonthViewFragment());
         fragmentTransaction.commit();
 
+        FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
+                startActivity(intent); //액티비티 열기
+            }
+        });
     }
 
     @Override

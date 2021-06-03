@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <LinearLayout
+
+                android:layout_marginLeft="27dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_marginTop="15dp"
+                    android:textSize="25dp"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="23dp"
+                    android:text="제목"/>
+                <EditText
+                    android:id="@+id/Schedule_Title"
+                    android:gravity="top"
+                    android:paddingBottom="20dp"
+                    android:textSize="23dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
+            <LinearLayout
+
+                android:layout_marginLeft="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:textColor="@color/black"
+                    android:textSize="25dp"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+
+                    android:text="시작"/>
+
+                <TimePicker
+                    android:id="@+id/tp_timepicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:timePickerMode="spinner" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginLeft="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:textColor="@color/black"
+                    android:textSize="25dp"
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="종료"/>
+                <TimePicker
+                    android:id="@+id/tp_timepicker2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:timePickerMode="spinner"/>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginLeft="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/GoogleMap_EditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:hint="장소"/>
+
+                <Button
+                    android:id="@+id/GoogleMap_Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="찾기"
+                    android:textColor="@color/black"
+                    app:backgroundTint="#D3D3D3" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <fragment
+                    android:id="@+id/GoogleMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="95dp"
+                    android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <EditText
+                    android:layout_marginTop="20dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:gravity="top"
+                    android:paddingBottom="20dp"
+                    android:textSize="23dp"
+                    android:hint="메모"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+            <LinearLayout
+
+                android:gravity="end"
+                android:layout_marginBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <Button
+                    android:id="@+id/Schedule_Save"
+                    android:layout_marginRight="20dp"
+                    app:backgroundTint="#D3D3D3"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnClick"
+                    android:text="저장"/>
+                <Button
+                    android:id="@+id/Schedule_Cancle"
+                    android:layout_marginRight="20dp"
+                    app:backgroundTint="#D3D3D3"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnClick"
+                    android:text="취소"/>
+
+                <Button
+                    android:id="@+id/Schedule_Delete"
+                    android:layout_marginRight="20dp"
+                    app:backgroundTint="#D3D3D3"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="btnClick"
+                    android:text="삭제" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
