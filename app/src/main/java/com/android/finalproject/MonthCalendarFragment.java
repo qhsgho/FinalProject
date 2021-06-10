@@ -1,5 +1,7 @@
 package com.android.finalproject;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -7,11 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.w3c.dom.Text;
 
 import java.util.Calendar;
 
@@ -34,6 +43,8 @@ public class MonthCalendarFragment extends Fragment {
 
     int year;
     int month;
+    LinearLayout previousView;
+    Cursor cursor;
 
     public MonthCalendarFragment() {
         // Required empty public constructor
@@ -71,11 +82,29 @@ public class MonthCalendarFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         FragmentActivity activity = getActivity();
         if (activity != null) {
             ((MainActivity) activity).setActionBarTitle(year+"년 "+month+"월");
+            ((MainActivity) activity).selecteddate.setYear(Integer.toString(year));
+            ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
+            ((MainActivity) activity).selecteddate.setDate("");
+            ((MainActivity) activity).selecteddate.setTime("");
+
         }
     }
+
+    // 벡그라운드로 가면 초기화
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(previousView != null) {
+            previousView.setBackgroundColor(Color.WHITE);
+            previousView = null;
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -89,9 +118,12 @@ public class MonthCalendarFragment extends Fragment {
         // 달의 첫번째 요일 알기 위함
         cal.set(year, month-1, 1);
 
-        GridView gridview = (GridView) calView.findViewById(R.id.calendar_gridview);
-        GridListAdapter adapt = new GridListAdapter();
+        // 데이터 있음?
+        FragmentActivity activity = getActivity();
+        boolean a = ((MainActivity) activity).hasMonth(Integer.toString(year), Integer.toString(month));
 
+        GridView gridview = (GridView) calView.findViewById(R.id.calendar_gridview);
+        GridListAdapter adapt = new GridListAdapter(year, month, cal.get(Calendar.DAY_OF_WEEK) - 1, finddaynum(year, month), a);
 
         // 빈 요일만큼 달의 앞부분 공백 추가
         for(int i = 1; i < cal.get(Calendar.DAY_OF_WEEK); i++) {
@@ -101,6 +133,7 @@ public class MonthCalendarFragment extends Fragment {
         for(int i = 0; i < finddaynum(year, month); i++) {
             adapt.addItem(new DateItem(Integer.toString(i+1)));
         }
+
         // 7*6 맞추기 위해 공백 추가
         int v = 42 - adapt.getCount();
         for(int i = 0; i < v; i++) {
@@ -108,23 +141,58 @@ public class MonthCalendarFragment extends Fragment {
         }
 
         gridview.setAdapter(adapt);
+//        gridview.setFocusable(true);
+
+
+/*
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            for(int i = cal.get(Calendar.DAY_OF_WEEK); i < finddaynum(year, month); i++) {
+
+                cursor = ((MainActivity) activity).findDateFromDb(Integer.toString(year), Integer.toString(month), Integer.toString(i));
+
+                if(cursor != null) {
+
+                    View view = gridview.getChildAt(i);
+
+                    ((MainActivity) activity).viewDateTimeListView(cursor, view);
+                }
+            }
+        }
+
+ */
 
         // 클릭 이벤트 처리
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            TextView previousView = null;
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                TextView textView = (TextView)view.findViewById(R.id.item_text);
+                LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.item_text_background);
+                TextView textView = (TextView) view.findViewById(R.id.item_text);
 
                 if((String) textView.getText() != " ") {
-                    Toast.makeText(view.getContext(),year+"."+month+"."+textView.getText(),Toast.LENGTH_SHORT).show();
                     if(previousView != null) {
                         previousView.setBackgroundColor(Color.WHITE);
                     }
-                    textView.setBackgroundColor(Color.CYAN);
-                    previousView = textView;
+                    linearLayout.setBackgroundColor(Color.CYAN);
+                    previousView = linearLayout;
+
+                    // 달력의 날짜
+                    FragmentActivity activity = getActivity();
+                    if (activity != null) {
+                        if(((MainActivity) activity).hasDate(Integer.toString(year), Integer.toString(month), (String) textView.getText())) {
+                            if(((MainActivity) activity).dateCount(Integer.toString(year), Integer.toString(month), (String) textView.getText()) == 1) {
+                                Toast.makeText(view.getContext(),"getnum : "+((MainActivity) activity).dateCount(Integer.toString(year), Integer.toString(month), (String) textView.getText()),Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(view.getContext(),"getnum : "+((MainActivity) activity).dateCount(Integer.toString(year), Integer.toString(month), (String) textView.getText()),Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        ((MainActivity) activity).selecteddate.setAll(Integer.toString(year), Integer.toString(month), (String) textView.getText(), "8");
+                        ((MainActivity) activity).v = gridview.getChildAt(position);
+                    }
                 }
             }
         });

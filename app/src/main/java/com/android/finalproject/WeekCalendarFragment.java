@@ -72,8 +72,30 @@ public class WeekCalendarFragment extends Fragment {
         FragmentActivity activity = getActivity();
         if (activity != null) {
             ((MainActivity) activity).setActionBarTitle(year+"년 "+month+"월");
+            ((MainActivity) activity).selecteddate.setYear(Integer.toString(year));
+            ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
+            ((MainActivity) activity).selecteddate.setDate("");
+            ((MainActivity) activity).selecteddate.setTime("");
+
         }
     }
+
+    // 벡그라운드로 가면 초기화
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if(datepreviousView != null) {
+            datepreviousView.setBackgroundColor(Color.WHITE);
+            datepreviousView = null;
+        }
+
+        if(gridpreviousView != null) {
+            gridpreviousView.setBackgroundColor(Color.WHITE);
+            gridpreviousView = null;
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -142,12 +164,6 @@ public class WeekCalendarFragment extends Fragment {
                 if(datepreviousView != null) {
                     datepreviousView.setBackgroundColor(Color.WHITE);
                 }
-                else if(datepreviousView != null && gridpreviousView != null) {
-                    datepreviousView.setBackgroundColor(Color.WHITE);
-                    gridpreviousView.setBackgroundColor(Color.WHITE);
-                    datepreviousView = null;
-                    gridpreviousView = null;
-                }
 
                 textView.setBackgroundColor(Color.CYAN);
                 datepreviousView = textView;
@@ -160,6 +176,7 @@ public class WeekCalendarFragment extends Fragment {
         gridview_timegrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             View daychildView = null;
             int dayposition = 0;
+            int time;
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -184,7 +201,7 @@ public class WeekCalendarFragment extends Fragment {
                     gridpreviousView.setBackgroundColor(Color.WHITE);
                     datepreviousView.setBackgroundColor(Color.WHITE);
                 }
-                else if(gridpreviousView == null && datepreviousView != null) {
+                else if(datepreviousView != null) {
                     datepreviousView.setBackgroundColor(Color.WHITE);
                     datepreviousView = null;
                 }
@@ -193,6 +210,17 @@ public class WeekCalendarFragment extends Fragment {
                 dayTextview.setBackgroundColor(Color.CYAN);
                 gridpreviousView = textView;
                 datepreviousView = dayTextview;
+
+
+                time = position / 7;
+                // 달력의 날짜
+                FragmentActivity activity = getActivity();
+                if (activity != null) {
+                    ((MainActivity) activity).selecteddate.setYear(Integer.toString(year));
+                    ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
+                    ((MainActivity) activity).selecteddate.setDate(((String) dayTextview.getText()));
+                    ((MainActivity) activity).selecteddate.setTime(Integer.toString(time));
+                }
             }
         });
 

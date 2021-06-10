@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <LinearLayout
 
+            <LinearLayout
                 android:layout_marginLeft="27dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                     android:text="시작"/>
 
                 <TimePicker
-                    android:id="@+id/tp_timepicker"
+                    android:id="@+id/tp_timepicker_start"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:timePickerMode="spinner" />
@@ -72,7 +72,7 @@
                     android:layout_height="match_parent"
                     android:text="종료"/>
                 <TimePicker
-                    android:id="@+id/tp_timepicker2"
+                    android:id="@+id/tp_timepicker_end"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:timePickerMode="spinner"/>
@@ -125,6 +125,7 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal">
                 <EditText
+                    android:id="@+id/memo"
                     android:layout_marginTop="20dp"
                     android:layout_marginLeft="40dp"
                     android:layout_marginRight="40dp"
@@ -173,5 +174,7 @@
                     android:text="삭제" />
             </LinearLayout>
         </LinearLayout>
+
     </ScrollView>
+
 </LinearLayout>

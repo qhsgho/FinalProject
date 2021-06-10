@@ -1,15 +1,25 @@
 package com.android.finalproject;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,39 +33,70 @@ import java.util.List;
 import java.util.Locale;
 
 public class DetailedScheduleActivity extends AppCompatActivity implements OnMapReadyCallback{
-     EditText editText;
+     EditText Map_editText;
      Button search_Btn;
      GoogleMap mMap;
      Geocoder geocoder;
 
+    EditText mTitle;
+    String mYear;
+    String mMonth;
+    String mDate;
+    int mTimeStart;
+    int mTimeEnd;
+    EditText mPlace;
+    EditText mMemo;
+
+    private DBHelper mDbHelper;
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_schedule);
 
+        mDbHelper = new DBHelper(this);
+
+        Intent intent = getIntent();
+        String year, month, date, time;
+        year = intent.getStringExtra("year");
+        month = intent.getStringExtra("month");
+        date = intent.getStringExtra("date");
+        time = intent.getStringExtra("time");
+
+        EditText a = findViewById(R.id.Schedule_Title);
+        a.setText(year+"년 "+month+"월 "+date+"일 "+time+"시");
+
+        mYear = year;
+        mMonth = month;
+        mDate = date;
+
         //제목 설정
         ActionBar ab = getSupportActionBar();
         ab.setTitle("CalendarApp");
 
-
         //객체 초기화
-        editText = findViewById(R.id.GoogleMap_EditText);
+        Map_editText = findViewById(R.id.GoogleMap_EditText);
         search_Btn = findViewById(R.id.GoogleMap_Button);
         
         //GoogleMap
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.GoogleMap);
         mapFragment.getMapAsync(this);
 
-
     }
 
 
     //버튼 설정
+    @RequiresApi(api = Build.VERSION_CODES.M)
     public void btnClick(View view){
         if(view.getId()==R.id.Schedule_Save){
+            insertRecord();
+            ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
             finish();
         }else if(view.getId()==R.id.Schedule_Cancle){
-            finish();
+            Intent intent = new Intent(getApplication(), Testdb.class);
+            startActivity(intent); //액티비티 열기
+            //finish();
         }else if(view.getId()==R.id.Schedule_Delete){
             finish();
         }
@@ -68,12 +109,11 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         geocoder = new Geocoder(this, Locale.KOREA);
 
 
-
         // 버튼 이벤트
         search_Btn.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                String str = editText.getText().toString();
+                String str = Map_editText.getText().toString();
                 List<Address> addressList = null;
                 try {
                     // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
@@ -86,7 +126,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
                 }
                 if (addressList != null) {
                     if (addressList.size() == 0)
-                        editText.setText("해당되는 주소 정보는 없습니다.");
+                        Map_editText.setText("해당되는 주소 정보는 없습니다.");
 
                     else {
                         System.out.println(addressList.get(0).toString());
@@ -124,6 +164,23 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mMap.addMarker(new MarkerOptions().position(sydney).title("한성대학교"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
     }
-    
-    
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void insertRecord() {
+        mTitle = (EditText) findViewById(R.id.Schedule_Title);
+        mPlace = (EditText) findViewById(R.id.GoogleMap_EditText);
+        mMemo = (EditText) findViewById(R.id.memo);
+
+        TimePicker startTime = (TimePicker) findViewById(R.id.tp_timepicker_start);
+        mTimeStart = startTime.getHour();
+        TimePicker endTime = (TimePicker) findViewById(R.id.tp_timepicker_end);
+        mTimeEnd = endTime.getHour();
+
+        mDbHelper.insertUserBySQL(mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString());
+//        long nOfRows = mDbHelper.insertUserByMethod(name.getText().toString(),phone.getText().toString());
+//        if (nOfRows >0)
+//            Toast.makeText(this,nOfRows+" Record Inserted", Toast.LENGTH_SHORT).show();
+//        else
+//            Toast.makeText(this,"No Record Inserted", Toast.LENGTH_SHORT).show();
+    }
 }
