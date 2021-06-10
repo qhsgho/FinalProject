@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,6 +48,8 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
     EditText mPlace;
     EditText mMemo;
 
+    String _id, title, year, month, date, time_start, time_end, place, memo;
+
     private DBHelper mDbHelper;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -58,14 +61,41 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mDbHelper = new DBHelper(this);
 
         Intent intent = getIntent();
-        String year, month, date, time;
+
+        _id = intent.getStringExtra("id");
+        title = intent.getStringExtra("title");
         year = intent.getStringExtra("year");
         month = intent.getStringExtra("month");
         date = intent.getStringExtra("date");
-        time = intent.getStringExtra("time");
+        time_start = intent.getStringExtra("time_start");
+        time_end = intent.getStringExtra("time_end");
+        place = intent.getStringExtra("place");
+        memo = intent.getStringExtra("memo");
 
-        EditText a = findViewById(R.id.Schedule_Title);
-        a.setText(year+"년 "+month+"월 "+date+"일 "+time+"시");
+
+        if(title == null) {
+            title = year+"년 "+month+"월 "+date+"일 "+time_start+"시";
+        }
+
+        if(place == null) {
+            place = "hansung";
+        }
+
+        if(time_end == null) {
+            time_end = Integer.toString(Integer.parseInt(time_start) + 1);
+        }
+
+        EditText edit_title = findViewById(R.id.Schedule_Title);
+        edit_title.setText(title);
+
+        EditText edit_memo = findViewById(R.id.memo);
+        edit_memo.setText(memo);
+
+        TimePicker startTime = (TimePicker) findViewById(R.id.tp_timepicker_start);
+        startTime.setHour(Integer.parseInt(time_start));
+
+        TimePicker endTime = (TimePicker) findViewById(R.id.tp_timepicker_end);
+        endTime.setHour(Integer.parseInt(time_end));
 
         mYear = year;
         mMonth = month;
@@ -77,6 +107,8 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
 
         //객체 초기화
         Map_editText = findViewById(R.id.GoogleMap_EditText);
+        Map_editText.setText(place);
+
         search_Btn = findViewById(R.id.GoogleMap_Button);
         
         //GoogleMap
@@ -90,14 +122,20 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void btnClick(View view){
         if(view.getId()==R.id.Schedule_Save){
-            insertRecord();
+            if(_id == null)
+                insertRecord();
+            else
+                updateRecord();
+
             ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
             finish();
+
         }else if(view.getId()==R.id.Schedule_Cancle){
-            Intent intent = new Intent(getApplication(), Testdb.class);
-            startActivity(intent); //액티비티 열기
-            //finish();
+
+            finish();
         }else if(view.getId()==R.id.Schedule_Delete){
+            deleteRecord();
+            ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
             finish();
         }
     }
@@ -161,7 +199,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(37.5817891, 127.008175);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("한성대학교"));
+        mMap.addMarker(new MarkerOptions().position(sydney).title(place));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
     }
 
@@ -177,10 +215,27 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mTimeEnd = endTime.getHour();
 
         mDbHelper.insertUserBySQL(mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString());
-//        long nOfRows = mDbHelper.insertUserByMethod(name.getText().toString(),phone.getText().toString());
-//        if (nOfRows >0)
-//            Toast.makeText(this,nOfRows+" Record Inserted", Toast.LENGTH_SHORT).show();
-//        else
-//            Toast.makeText(this,"No Record Inserted", Toast.LENGTH_SHORT).show();
+
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void updateRecord() {
+        mTitle = (EditText) findViewById(R.id.Schedule_Title);
+        mPlace = (EditText) findViewById(R.id.GoogleMap_EditText);
+        mMemo = (EditText) findViewById(R.id.memo);
+
+        TimePicker startTime = (TimePicker) findViewById(R.id.tp_timepicker_start);
+        mTimeStart = startTime.getHour();
+        TimePicker endTime = (TimePicker) findViewById(R.id.tp_timepicker_end);
+        mTimeEnd = endTime.getHour();
+
+        mDbHelper.updateUserBySQL(_id, mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString());
+    }
+
+    private void deleteRecord() {
+
+        mDbHelper.deleteUserBySQL(_id);
+
+    }
+
 }

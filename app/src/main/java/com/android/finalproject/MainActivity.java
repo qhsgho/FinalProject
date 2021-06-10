@@ -1,15 +1,20 @@
 package com.android.finalproject;
 
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,11 +23,19 @@ import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     SelectedDate selecteddate = new SelectedDate("", "", "", "");
@@ -54,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("year", selecteddate.getYear());
                     intent.putExtra("month", selecteddate.getMonth());
                     intent.putExtra("date", selecteddate.getDate());
-                    intent.putExtra("time", selecteddate.getTime());
+                    intent.putExtra("time_start", selecteddate.getTime());
                     startActivity(intent); //액티비티 열기
                 }
             }
@@ -98,23 +111,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void viewAllToListView () {
-
-        Cursor cursor = mDbHelper.getAllUsersBySQL();
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
-                R.layout.plan_item, cursor, new String[]{
-                UserContract.Users.KEY_TITLE},
-                new int[]{R.id.plan_title}, 0);
-
-        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
-        lv.setAdapter(adapter);
-
-        lv.setFocusable(false);
-        lv.setClickable(false);
-        lv.setEnabled(false);
-    }
-
     public void findDateFromDb (String year, String month, String date) {
 
         Cursor cursor = mDbHelper.getDateBySQL(year, month, date);
@@ -125,92 +121,87 @@ public class MainActivity extends AppCompatActivity {
                 new int[]{R.id.plan_title}, 0);
 
         ListView lv = (ListView) v.findViewById(R.id.plan_listview);
-        lv.setAdapter(adapter);
 
-
-        lv.setFocusable(false);
-//        lv.setClickable(false);
-//        lv.setEnabled(false);
-
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Adapter adapter = adapterView.getAdapter();
-
-                Toast.makeText(view.getContext(),((Cursor) adapter.getItem(i)).getString(1),Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
-                intent.putExtra("year", ((Cursor) adapter.getItem(i)).getString(2));
-                intent.putExtra("month", ((Cursor) adapter.getItem(i)).getString(3));
-                intent.putExtra("date", ((Cursor) adapter.getItem(i)).getString(4));
-                intent.putExtra("time", ((Cursor) adapter.getItem(i)).getString(5));
-                startActivity(intent); //액티비티 열기
-            }
-        });
-
-    }
-
-    /*
-    public Cursor findDateToListView (String year, String month) {
-
-        Cursor cursor = mDbHelper.getDateBySQL(year, month);
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
-                R.layout.plan_item, cursor, new String[]{
-                UserContract.Users.KEY_TITLE},
-                new int[]{R.id.plan_title}, 0);
-
-        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
         lv.setAdapter(adapter);
 
         lv.setFocusable(false);
-        lv.setClickable(false);
-        lv.setEnabled(false);
 
-    }
-
-     */
-
-    public void viewDateTimeListView (Cursor cursor, View v) {
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
-                R.layout.plan_item, cursor, new String[]{
-                UserContract.Users.KEY_TITLE},
-                new int[]{R.id.plan_title}, 0);
-
-        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
-        lv.setAdapter(adapter);
-
-        /*
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP_MR1)
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Adapter adapter = adapterView.getAdapter();
+                v = adapterView;
 
-                mId.setText(((Cursor) adapter.getItem(i)).getString(0));
-                mName.setText(((Cursor) adapter.getItem(i)).getString(1));
-                mPhone.setText(((Cursor) adapter.getItem(i)).getString(2));
+                if(lv.getChildCount() == 1) {
+                    Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
+                    intent.putExtra("id", ((Cursor) adapter.getItem(i)).getString(0));
+                    intent.putExtra("title", ((Cursor) adapter.getItem(i)).getString(1));
+                    intent.putExtra("year", ((Cursor) adapter.getItem(i)).getString(2));
+                    intent.putExtra("month", ((Cursor) adapter.getItem(i)).getString(3));
+                    intent.putExtra("date", ((Cursor) adapter.getItem(i)).getString(4));
+                    intent.putExtra("time_start", ((Cursor) adapter.getItem(i)).getString(5));
+                    intent.putExtra("time_end", ((Cursor) adapter.getItem(i)).getString(6));
+                    intent.putExtra("place", ((Cursor) adapter.getItem(i)).getString(7));
+                    intent.putExtra("memo", ((Cursor) adapter.getItem(i)).getString(8));
+                    startActivity(intent); //액티비티 열기
+                }
+
+                else {
+                    final List<String> ListItems = new ArrayList<>();
+
+                    for(int j = 0; j < lv.getChildCount(); j++) {
+                        View v = lv.getChildAt(j);
+                        TextView textView = v.findViewById(R.id.plan_title);
+                        ListItems.add((String) textView.getText());
+                    }
+
+                    final CharSequence[] oItems = ListItems.toArray(new String[ ListItems.size() ]);
+
+                    AlertDialog.Builder selectDialog = new AlertDialog.Builder(context);
+
+                    selectDialog.setTitle(year+"."+month+"."+date);
+                    selectDialog.setItems(oItems, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
+                            intent.putExtra("id", ((Cursor) adapter.getItem(which)).getString(0));
+                            intent.putExtra("title", ((Cursor) adapter.getItem(which)).getString(1));
+                            intent.putExtra("year", ((Cursor) adapter.getItem(which)).getString(2));
+                            intent.putExtra("month", ((Cursor) adapter.getItem(which)).getString(3));
+                            intent.putExtra("date", ((Cursor) adapter.getItem(which)).getString(4));
+                            intent.putExtra("time_start", ((Cursor) adapter.getItem(which)).getString(5));
+                            intent.putExtra("time_end", ((Cursor) adapter.getItem(which)).getString(6));
+                            intent.putExtra("place", ((Cursor) adapter.getItem(which)).getString(7));
+                            intent.putExtra("memo", ((Cursor) adapter.getItem(which)).getString(8));
+                            startActivity(intent); //액티비티 열기
+
+                        }
+                    });
+
+                    selectDialog.show();
+
+                }
+
             }
         });
-
-         */
     }
+
 
     public boolean hasDate (String year, String month, String date) {
-        boolean hasdate = mDbHelper.hasDate(year, month, date);
-
-        return hasdate;
+        return mDbHelper.hasDate(year, month, date);
     }
 
     public boolean hasMonth (String year, String month) {
-        boolean hasmonth = mDbHelper.hasMonth(year, month);
-
-        return hasmonth;
+        return mDbHelper.hasMonth(year, month);
     }
 
     public int dateCount (String year, String month, String date) {
-        int dateCount = mDbHelper.dateCount(year, month, date);
-
-        return dateCount;
+        return mDbHelper.dateCount(year, month, date);
     }
 
+
+
 }
+

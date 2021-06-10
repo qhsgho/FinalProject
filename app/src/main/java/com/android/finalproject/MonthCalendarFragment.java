@@ -89,7 +89,7 @@ public class MonthCalendarFragment extends Fragment {
             ((MainActivity) activity).selecteddate.setYear(Integer.toString(year));
             ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
             ((MainActivity) activity).selecteddate.setDate("");
-            ((MainActivity) activity).selecteddate.setTime("");
+            ((MainActivity) activity).selecteddate.setTime("8");
 
         }
     }
@@ -143,25 +143,6 @@ public class MonthCalendarFragment extends Fragment {
         gridview.setAdapter(adapt);
 //        gridview.setFocusable(true);
 
-
-/*
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            for(int i = cal.get(Calendar.DAY_OF_WEEK); i < finddaynum(year, month); i++) {
-
-                cursor = ((MainActivity) activity).findDateFromDb(Integer.toString(year), Integer.toString(month), Integer.toString(i));
-
-                if(cursor != null) {
-
-                    View view = gridview.getChildAt(i);
-
-                    ((MainActivity) activity).viewDateTimeListView(cursor, view);
-                }
-            }
-        }
-
- */
-
         // 클릭 이벤트 처리
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -181,15 +162,6 @@ public class MonthCalendarFragment extends Fragment {
                     // 달력의 날짜
                     FragmentActivity activity = getActivity();
                     if (activity != null) {
-                        if(((MainActivity) activity).hasDate(Integer.toString(year), Integer.toString(month), (String) textView.getText())) {
-                            if(((MainActivity) activity).dateCount(Integer.toString(year), Integer.toString(month), (String) textView.getText()) == 1) {
-                                Toast.makeText(view.getContext(),"getnum : "+((MainActivity) activity).dateCount(Integer.toString(year), Integer.toString(month), (String) textView.getText()),Toast.LENGTH_SHORT).show();
-                            }
-                            else {
-                                Toast.makeText(view.getContext(),"getnum : "+((MainActivity) activity).dateCount(Integer.toString(year), Integer.toString(month), (String) textView.getText()),Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
                         ((MainActivity) activity).selecteddate.setAll(Integer.toString(year), Integer.toString(month), (String) textView.getText(), "8");
                         ((MainActivity) activity).v = gridview.getChildAt(position);
                     }

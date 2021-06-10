@@ -126,13 +126,21 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void updateUserBySQL(String _id, String title) {
+    public void updateUserBySQL(String _id, String title, String year, String month, String date, String time_start, String time_end, String place, String memo) {
         try {
             String sql = String.format (
-                    "UPDATE  %s SET %s = '%s' WHERE %s = %s",
+                    "UPDATE  %s SET %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
                     UserContract.Users.TABLE_NAME,
                     UserContract.Users.KEY_TITLE, title,
+                    UserContract.Users.KEY_YEAR, year,
+                    UserContract.Users.KEY_MONTH, month,
+                    UserContract.Users.KEY_DATE, date,
+                    UserContract.Users.KEY_TIME_START, time_start,
+                    UserContract.Users.KEY_TIME_END, time_end,
+                    UserContract.Users.KEY_PLACE, place,
+                    UserContract.Users.KEY_MEMO, memo,
                     UserContract.Users._ID, _id) ;
+
             getWritableDatabase().execSQL(sql);
         } catch (SQLException e) {
             Log.e(TAG,"Error in updating recodes");

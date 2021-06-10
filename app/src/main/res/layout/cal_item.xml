@@ -31,7 +31,6 @@
             >
 
             <ListView
-                android:background="@color/green"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/plan_listview"/>

@@ -13,7 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FinalProject"
         >
-        <activity android:name=".Testdb"></activity>
 
         <!-- GoolgleMap 관련 -->
         <meta-data

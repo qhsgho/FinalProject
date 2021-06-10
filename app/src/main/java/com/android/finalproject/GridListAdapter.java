@@ -79,18 +79,6 @@ public class GridListAdapter extends BaseAdapter {
         TextView dateText = calView.findViewById(R.id.item_text);
         dateText.setText(dateitem.getDate());
 
-
-/*
-        for(int i = date_start; i < date_num + date_start; i++) {
-
-            if(position == i) {
-                ((MainActivity) MainActivity.context).v = calView;
-                ((MainActivity) MainActivity.context).viewAllToListView();
-            }
-        }
-
- */
-
         if(isdate) {
             if(date_start <= position && position < date_start + date_num) {
                 if(((MainActivity) MainActivity.context).hasDate(Integer.toString(year), Integer.toString(month), Integer.toString(position - date_start + 1))) {
@@ -100,44 +88,7 @@ public class GridListAdapter extends BaseAdapter {
             }
         }
 
-//        if(date_start <= position && position < date_start + date_num) {
- //           if(((MainActivity) MainActivity.context).hasDate(Integer.toString(year), Integer.toString(month), Integer.toString(position))) {
-//            ((MainActivity) MainActivity.context).v = calView;
-//            ((MainActivity) MainActivity.context).findDateFromDb(Integer.toString(year), Integer.toString(month), Integer.toString(position));
-//            ((MainActivity) MainActivity.context).viewAllToListView();
-  //          }
-
-//            viewAllToListView(calView, context);
-  //      }
-
-
-/*
-        if(position == 1) {
-            ((MainActivity) MainActivity.context).v = calView;
-            ((MainActivity) MainActivity.context).viewAllToListView();
-        }
-
- */
-
         return calView;
-    }
-
-
-    public void viewAllToListView (View calView, Context context) {
-
-        Cursor cursor = mDbHelper.getAllUsersBySQL();
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(context,
-                R.layout.plan_item, cursor, new String[]{
-                UserContract.Users.KEY_TITLE},
-                new int[]{R.id.plan_title}, 0);
-
-        ListView lv = (ListView) calView.findViewById(R.id.plan_listview);
-        lv.setAdapter(adapter);
-
-        lv.setFocusable(false);
-        lv.setClickable(false);
-        lv.setEnabled(false);
     }
 
 }
