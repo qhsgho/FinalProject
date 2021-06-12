@@ -122,7 +122,7 @@ public class WeekCalendarFragment extends Fragment {
 
         if (activity != null) {
             for(int i = 0; i < 7; i++) {
-                isdayofweek[i] = ((MainActivity) activity).hasDate(Integer.toString(yearfordate), Integer.toString(monthfordate), Integer.toString(sundatefordate));
+
                 sundatefordate++;
 
                 if (sundatefordate > lastday) {
@@ -149,32 +149,35 @@ public class WeekCalendarFragment extends Fragment {
 
 
         int restbox = 1;
-        for(int i = 1; i < 8; i++) {
-            weekDateItem[i-1] = new WeekDateItem();
+        for(int i = 0; i < 7; i++) {
+            weekDateItem[i] = new WeekDateItem();
 
             if(weeksundate > lastday) {
 
                 if (month == 12) {
-                    weekDateItem[i-1].setYear(year+1);
-                    weekDateItem[i-1].setMonth(1);
+                    weekDateItem[i].setYear(year+1);
+                    weekDateItem[i].setMonth(1);
                 } else {
-                    weekDateItem[i-1].setYear(year);
-                    weekDateItem[i-1].setMonth(month+1);
+                    weekDateItem[i].setYear(year);
+                    weekDateItem[i].setMonth(month+1);
                 }
 
                 adapt.addItem(new DateItem(Integer.toString(restbox)));
 
-                weekDateItem[i-1].setDate(restbox);
+                weekDateItem[i].setDate(restbox);
 
                 restbox++;
             }
             else {
                 adapt.addItem(new DateItem(Integer.toString(weeksundate)));
 
-                weekDateItem[i-1].setYear(year);
-                weekDateItem[i-1].setMonth(month);
-                weekDateItem[i-1].setDate(weeksundate);
+                weekDateItem[i].setYear(year);
+                weekDateItem[i].setMonth(month);
+                weekDateItem[i].setDate(weeksundate);
             }
+
+            isdayofweek[i] = ((MainActivity) activity).hasDate(Integer.toString(weekDateItem[i].getYear()), Integer.toString(weekDateItem[i].getMonth()),
+                    Integer.toString(weekDateItem[i].getDate()));
             weeksundate++;
         }
 
@@ -187,7 +190,7 @@ public class WeekCalendarFragment extends Fragment {
         // 격자부분 그리드 뷰
         ExpandableHeightGridView gridview_timegrid = (ExpandableHeightGridView) calView.findViewById(R.id.calendar_gridview_week_timegrid);
         gridview_timegrid.setExpanded(true);
-        WeekTimeGridListAdapter adapt_timegrid = new WeekTimeGridListAdapter(year, month, sundate, lastday, isdayofweek, isdate, weekDateItem);
+        WeekTimeGridListAdapter adapt_timegrid = new WeekTimeGridListAdapter(year, month, sundate, lastday, isdayofweek, weekDateItem);
 
 
 

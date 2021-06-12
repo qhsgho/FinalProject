@@ -169,13 +169,13 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mMap = googleMap;
         geocoder = new Geocoder(this, Locale.KOREA);
 
-        if(place_point.equals("") || place_point == null) {
-            // Add a marker in Sydney and move the camera
+        if(place_point == null) {
+
             LatLng sydney = new LatLng(37.5817891, 127.008175);
             mMap.addMarker(new MarkerOptions().position(sydney).title("hansung"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
 
-            mPlacePoint = "";
+            mPlacePoint = sydney.toString();;
         }
 
         else {

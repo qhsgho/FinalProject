@@ -18,19 +18,15 @@ public class WeekTimeGridListAdapter extends BaseAdapter {
     int date;
     int lastday;
     boolean isdayofweek[];
-    boolean isdate;
 
     WeekDateItem weekDateItem[];
 
-
-
-    public WeekTimeGridListAdapter(int year, int month, int sundate, int lastday, boolean[] isdayofweek, boolean isdate, WeekDateItem[] weekDateItems) {
+    public WeekTimeGridListAdapter(int year, int month, int sundate, int lastday, boolean[] isdayofweek, WeekDateItem[] weekDateItems) {
         this.year = year;
         this.month = month;
         this.date = sundate;
         this.lastday = lastday;
         this.isdayofweek = isdayofweek;
-        this.isdate = isdate;
 
         this.weekDateItem = weekDateItems;
     }
@@ -67,21 +63,19 @@ public class WeekTimeGridListAdapter extends BaseAdapter {
         TextView dateText = calView.findViewById(R.id.item_text_week_time);
         dateText.setText(dateitem.getDate());
 
-        if(isdate) {
-            int daypos;
-            daypos = position % 7;
+        int daypos;
+        daypos = position % 7;
 
-            if(isdayofweek[daypos]) {
-                int stime = position / 7;
+        if(isdayofweek[daypos]) {
+            int stime = position / 7;
 
-                if(((MainActivity) MainActivity.context).hasTime(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
-                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(stime))) {
+            if(((MainActivity) MainActivity.context).hasTime(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
+                    Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(stime))) {
 
-                    ((MainActivity) MainActivity.context).v = calView;
-                    ((MainActivity) MainActivity.context).findTimeFromDb(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
-                            Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(stime), Integer.toString(stime+1));
+                ((MainActivity) MainActivity.context).v = calView;
+                ((MainActivity) MainActivity.context).findTimeFromDb(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
+                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(stime), Integer.toString(stime+1));
 
-                }
             }
         }
 
