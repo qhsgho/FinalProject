@@ -7,11 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -35,7 +39,7 @@ public class WeekCalendarFragment extends Fragment {
     int month;
     int sundate;
     TextView datepreviousView = null;
-    TextView gridpreviousView = null;
+    LinearLayout gridpreviousView = null;
 
     public WeekCalendarFragment() {
         // Required empty public constructor
@@ -76,7 +80,7 @@ public class WeekCalendarFragment extends Fragment {
             ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
             ((MainActivity) activity).selecteddate.setDate("");
             ((MainActivity) activity).selecteddate.setTime("");
-
+            ((MainActivity) activity).selecteddate.setType("week");
         }
     }
 
@@ -102,9 +106,78 @@ public class WeekCalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View calView = inflater.inflate(R.layout.fragment_week_calendar, container, false);
 
+        WeekDateItem weekDateItem[] = new WeekDateItem[7];
+
+        int weeksundate = sundate;
+        int lastday = finddaynum(year, month);
+
+        FragmentActivity activity = getActivity();
+
+        // 주간 달력에 넣어야할 데이터가 있는지 확인
+        boolean isdayofweek[] = new boolean[7];
+        int yearfordate = year;
+        int monthfordate = month;
+        int sundatefordate = sundate;
+        boolean isdate = false;
+
+        if (activity != null) {
+            for(int i = 0; i < 7; i++) {
+                isdayofweek[i] = ((MainActivity) activity).hasDate(Integer.toString(yearfordate), Integer.toString(monthfordate), Integer.toString(sundatefordate));
+                sundatefordate++;
+
+                if (sundatefordate > lastday) {
+                    sundatefordate = 1;
+
+                    if (monthfordate == 12) {
+                        yearfordate++;
+                        monthfordate = 1;
+                    } else {
+                        monthfordate++;
+                    }
+                }
+
+                if(isdayofweek[i]) {
+                    isdate = true;
+                }
+            }
+        }
+
+
         // 요일 그리드 뷰
         GridView gridview = (GridView) calView.findViewById(R.id.calendar_gridview_week);
         WeekGridListAdapter adapt = new WeekGridListAdapter();
+
+
+        int restbox = 1;
+        for(int i = 1; i < 8; i++) {
+            weekDateItem[i-1] = new WeekDateItem();
+
+            if(weeksundate > lastday) {
+
+                if (month == 12) {
+                    weekDateItem[i-1].setYear(year+1);
+                    weekDateItem[i-1].setMonth(1);
+                } else {
+                    weekDateItem[i-1].setYear(year);
+                    weekDateItem[i-1].setMonth(month+1);
+                }
+
+                adapt.addItem(new DateItem(Integer.toString(restbox)));
+
+                weekDateItem[i-1].setDate(restbox);
+
+                restbox++;
+            }
+            else {
+                adapt.addItem(new DateItem(Integer.toString(weeksundate)));
+
+                weekDateItem[i-1].setYear(year);
+                weekDateItem[i-1].setMonth(month);
+                weekDateItem[i-1].setDate(weeksundate);
+            }
+            weeksundate++;
+        }
+
 
         // 시간부분 그리드 뷰
         ExpandableHeightGridView gridview_timeline = (ExpandableHeightGridView) calView.findViewById(R.id.calendar_gridview_week_timeline);
@@ -114,27 +187,12 @@ public class WeekCalendarFragment extends Fragment {
         // 격자부분 그리드 뷰
         ExpandableHeightGridView gridview_timegrid = (ExpandableHeightGridView) calView.findViewById(R.id.calendar_gridview_week_timegrid);
         gridview_timegrid.setExpanded(true);
-        WeekTimeGridListAdapter adapt_timegrid = new WeekTimeGridListAdapter();
+        WeekTimeGridListAdapter adapt_timegrid = new WeekTimeGridListAdapter(year, month, sundate, lastday, isdayofweek, isdate, weekDateItem);
 
 
-        int weeksundate = sundate;
-        int restbox = 1;
-        int lastday = finddaynum(year, month);
-
-        for(int i = 1; i < 8; i++) {
-
-            if(weeksundate > lastday) {
-                adapt.addItem(new DateItem(""+restbox));
-                restbox++;
-            }
-            else {
-                adapt.addItem(new DateItem(""+weeksundate));
-            }
-            weeksundate++;
-        }
 
         for(int i = 0; i < 168; i++) {
-            adapt_timegrid.addItem(new DateItem(" "));
+            adapt_timegrid.addItem(new DateItem(""));
         }
 
 
@@ -147,11 +205,11 @@ public class WeekCalendarFragment extends Fragment {
 
         // 시간 부분
         gridview_timeline.setAdapter(adapt_timeline);
-        adapt_timeline.notifyDataSetChanged();
 
         // 격자 부분
         gridview_timegrid.setAdapter(adapt_timegrid);
-        adapt_timegrid.notifyDataSetChanged();
+
+        gridview_timegrid.setFocusable(true);
 
         // 클릭 이벤트 처리 달력
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,9 +240,7 @@ public class WeekCalendarFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 TextView textView = (TextView)view.findViewById(R.id.item_text_week_time);
-
-                // 포지션 토스트메시지
-                Toast.makeText(view.getContext(),"position : "+position,Toast.LENGTH_SHORT).show();
+                LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.item_text_background);
 
                 // 그리드 위치에 따른 요일 위치 찾기
                 if ((position + 1) % 7 == 0) {
@@ -206,20 +262,17 @@ public class WeekCalendarFragment extends Fragment {
                     datepreviousView = null;
                 }
 
-                textView.setBackgroundColor(Color.CYAN);
+                linearLayout.setBackgroundColor(Color.CYAN);
                 dayTextview.setBackgroundColor(Color.CYAN);
-                gridpreviousView = textView;
+                gridpreviousView = linearLayout;
                 datepreviousView = dayTextview;
 
-
-                time = position / 7;
                 // 달력의 날짜
+                time = position / 7;
                 FragmentActivity activity = getActivity();
                 if (activity != null) {
-                    ((MainActivity) activity).selecteddate.setYear(Integer.toString(year));
-                    ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
-                    ((MainActivity) activity).selecteddate.setDate(((String) dayTextview.getText()));
-                    ((MainActivity) activity).selecteddate.setTime(Integer.toString(time));
+                    ((MainActivity) activity).selecteddate.setAll(Integer.toString(year), Integer.toString(month), (String) dayTextview.getText(), Integer.toString(time), "week");
+                    ((MainActivity) activity).v = parent.getChildAt(position);
                 }
             }
         });
@@ -255,4 +308,5 @@ public class WeekCalendarFragment extends Fragment {
         }
         return day_num;
     }
+
 }

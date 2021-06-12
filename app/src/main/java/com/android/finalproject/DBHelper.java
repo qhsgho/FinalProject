@@ -69,10 +69,35 @@ public class DBHelper extends SQLiteOpenHelper {
         return getReadableDatabase().rawQuery(sql,null);
     }
 
+    public Cursor getTimeDateBySQL(String year, String month, String date, String time_start, String time_end) {
+        String sql = "Select * FROM " + UserContract.Users.TABLE_NAME + " Where " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
+                "' AND " + UserContract.Users.KEY_DATE + "= '"+ date + "' AND " + UserContract.Users.KEY_TIME_START + "= '"+ time_start +"' AND " + UserContract.Users.KEY_TIME_END +
+                "= '"+ time_end +"'";
+
+        return getReadableDatabase().rawQuery(sql,null);
+    }
+
     public boolean hasDate(String year, String month, String date) {
 
         String sql = "SELECT * FROM " + UserContract.Users.TABLE_NAME + " WHERE " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
                 "' AND " + UserContract.Users.KEY_DATE + "= '"+ date +"'";
+
+        Cursor cursor = getReadableDatabase().rawQuery(sql,null);
+
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+
+        cursor.close();
+
+        return true;
+    }
+
+    public boolean hasTime(String year, String month, String date, String time_start) {
+
+        String sql = "SELECT * FROM " + UserContract.Users.TABLE_NAME + " WHERE " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
+                "' AND " + UserContract.Users.KEY_DATE + "= '"+ date +  "' AND " + UserContract.Users.KEY_TIME_START + "= '"+ time_start + "'";
 
         Cursor cursor = getReadableDatabase().rawQuery(sql,null);
 

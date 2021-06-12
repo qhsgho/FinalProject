@@ -38,7 +38,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
-    SelectedDate selecteddate = new SelectedDate("", "", "", "");
+    SelectedDate selecteddate = new SelectedDate("", "", "", "", "");
 
     public static Context context;
     private DBHelper mDbHelper;
@@ -62,13 +62,41 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(selecteddate.getDate() != "") {
-                    Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
-                    intent.putExtra("year", selecteddate.getYear());
-                    intent.putExtra("month", selecteddate.getMonth());
-                    intent.putExtra("date", selecteddate.getDate());
-                    intent.putExtra("time_start", selecteddate.getTime());
-                    startActivity(intent); //액티비티 열기
+
+                    if(selecteddate.getType().equals("week")) {
+                        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
+
+                        if(lv.getChildCount() == 0) {
+                            Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
+                            intent.putExtra("year", selecteddate.getYear());
+                            intent.putExtra("month", selecteddate.getMonth());
+                            intent.putExtra("date", selecteddate.getDate());
+                            intent.putExtra("time_start", selecteddate.getTime());
+                            intent.putExtra("type", selecteddate.getType());
+                            startActivity(intent); //액티비티 열기
+                        }
+
+                        else {
+                            AlertDialog.Builder confirmDialog = new AlertDialog.Builder(context);
+
+                            confirmDialog.setTitle("주의");
+                            confirmDialog.setMessage("이미 일정이 있습니다");
+                            confirmDialog.setNeutralButton("취소", null);
+                            confirmDialog.show();
+                        }
+                    }
+
+                    else {
+                        Intent intent = new Intent(getApplication(), DetailedScheduleActivity.class);
+                        intent.putExtra("year", selecteddate.getYear());
+                        intent.putExtra("month", selecteddate.getMonth());
+                        intent.putExtra("date", selecteddate.getDate());
+                        intent.putExtra("time_start", selecteddate.getTime());
+                        intent.putExtra("type", selecteddate.getType());
+                        startActivity(intent); //액티비티 열기
+                    }
                 }
             }
         });
@@ -144,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("time_end", ((Cursor) adapter.getItem(i)).getString(6));
                     intent.putExtra("place", ((Cursor) adapter.getItem(i)).getString(7));
                     intent.putExtra("memo", ((Cursor) adapter.getItem(i)).getString(8));
+                    intent.putExtra("type", ("month"));
                     startActivity(intent); //액티비티 열기
                 }
 
@@ -175,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("time_end", ((Cursor) adapter.getItem(which)).getString(6));
                             intent.putExtra("place", ((Cursor) adapter.getItem(which)).getString(7));
                             intent.putExtra("memo", ((Cursor) adapter.getItem(which)).getString(8));
+                            intent.putExtra("type", ("month"));
                             startActivity(intent); //액티비티 열기
 
                         }
@@ -188,6 +218,69 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void findDateTimeFromDb (String year, String month, String date) {
+
+        Cursor cursor = mDbHelper.getDateBySQL(year, month, date);
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
+                R.layout.plan_griditem, cursor, new String[]{
+                UserContract.Users.KEY_TITLE},
+                new int[]{R.id.plan_title}, 0);
+
+        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
+
+        lv.setAdapter(adapter);
+
+        lv.setFocusable(false);
+        lv.setEnabled(false);
+        lv.setClickable(false);
+    }
+
+    public void findTimeFromDb (String year, String month, String date, String stime, String etime) {
+
+        Cursor cursor = mDbHelper.getTimeDateBySQL(year, month, date, stime, etime);
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
+                R.layout.plan_griditem, cursor, new String[]{
+                        UserContract.Users.KEY_TITLE},
+                        new int[]{R.id.plan_title}, 0);
+
+        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
+
+        lv.setAdapter(adapter);
+
+        lv.setFocusable(false);
+        lv.setEnabled(false);
+        lv.setClickable(false);
+
+
+        /*
+
+        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
+                R.layout.plan_griditem, cursor, new String[]{
+                UserContract.Users.KEY_TITLE},
+                new int[]{R.id.plan_title}, 0);
+
+        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
+
+        // start_time
+        cursor.getString(5);
+
+        // end_time
+        cursor.getString(6);
+
+        lv.setAdapter(adapter);
+
+        lv.setFocusable(false);
+        lv.setEnabled(false);
+        lv.setClickable(false);
+
+         */
+    }
+
+    public boolean hasTime (String year, String month, String date, String start_time) {
+        return mDbHelper.hasTime(year, month, date, start_time);
+    }
 
     public boolean hasDate (String year, String month, String date) {
         return mDbHelper.hasDate(year, month, date);

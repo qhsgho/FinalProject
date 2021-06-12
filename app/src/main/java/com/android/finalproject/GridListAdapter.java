@@ -28,8 +28,6 @@ public class GridListAdapter extends BaseAdapter {
 
     boolean isdate;
 
-    private DBHelper mDbHelper;
-
     public GridListAdapter(int year, int month, int date_start, int date_num, boolean isdate) {
         this.year = year;
         this.month = month;
@@ -61,8 +59,6 @@ public class GridListAdapter extends BaseAdapter {
     public View getView(int position, View calView, ViewGroup parent) {
         context = parent.getContext();
         DateItem dateitem = items.get(position);
-
-        mDbHelper = new DBHelper(context);
 
         if(calView == null) {
             LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

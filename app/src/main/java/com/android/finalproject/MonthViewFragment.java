@@ -65,9 +65,9 @@ public class MonthViewFragment extends Fragment {
         FragmentStateAdapter adapter = new MonthCalendarAdapter(this);
         vpPager.setAdapter(adapter);
 
-        vpPager.setCurrentItem(20);
+        vpPager.setCurrentItem(10);
 
-        vpPager.setOffscreenPageLimit(40);
+        vpPager.setOffscreenPageLimit(20);
 
         return rootView;
     }

@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.Calendar;
 
 public class WeekCalendarAdapter extends FragmentStateAdapter {
-    private static int NUM_ITEMS=40;
+    private static int NUM_ITEMS=20;
     public WeekCalendarAdapter(@NonNull Fragment fragment) {
         super(fragment);
     }
@@ -33,7 +33,7 @@ public class WeekCalendarAdapter extends FragmentStateAdapter {
         cal.set(year, month-1, sundate);
 
         // cal에 포지션에 의해 변한 날짜 연산
-        cal.add(Calendar.DATE, (position-20) * 7);
+        cal.add(Calendar.DATE, (position-10) * 7);
 
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH)+1;

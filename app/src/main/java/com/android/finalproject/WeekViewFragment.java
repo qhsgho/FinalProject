@@ -66,8 +66,8 @@ public class WeekViewFragment extends Fragment {
         FragmentStateAdapter adapter = new WeekCalendarAdapter(this);
         vpPager.setAdapter(adapter);
 
-        vpPager.setCurrentItem(20);
-        vpPager.setOffscreenPageLimit(40);
+        vpPager.setCurrentItem(10);
+        vpPager.setOffscreenPageLimit(20);
 
         return rootView;
     }

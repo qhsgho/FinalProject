@@ -1,20 +1,22 @@
 package com.android.finalproject;
 
 public class SelectedDate {
-    private String year, month, date, time;
+    private String year, month, date, time, type;
 
-    public SelectedDate(String year, String month, String date, String time) {
+    public SelectedDate(String year, String month, String date, String time, String type) {
         this.year = year;
         this.month = month;
         this.date = date;
         this.time = time;
+        this.type = type;
     }
 
-    public void setAll(String year, String month, String date, String time) {
+    public void setAll(String year, String month, String date, String time, String type) {
         this.year = year;
         this.month = month;
         this.date = date;
         this.time = time;
+        this.type = type;
     }
 
     public void setYear(String year) {
@@ -33,6 +35,10 @@ public class SelectedDate {
         this.time = time;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getYear() {
         return year;
     }
@@ -48,5 +54,7 @@ public class SelectedDate {
     public String getTime() {
         return time;
     }
+
+    public String getType() { return type; }
 
 }

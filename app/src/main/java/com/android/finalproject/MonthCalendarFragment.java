@@ -44,7 +44,6 @@ public class MonthCalendarFragment extends Fragment {
     int year;
     int month;
     LinearLayout previousView;
-    Cursor cursor;
 
     public MonthCalendarFragment() {
         // Required empty public constructor
@@ -90,6 +89,7 @@ public class MonthCalendarFragment extends Fragment {
             ((MainActivity) activity).selecteddate.setMonth(Integer.toString(month));
             ((MainActivity) activity).selecteddate.setDate("");
             ((MainActivity) activity).selecteddate.setTime("8");
+            ((MainActivity) activity).selecteddate.setType("month");
 
         }
     }
@@ -127,7 +127,7 @@ public class MonthCalendarFragment extends Fragment {
 
         // 빈 요일만큼 달의 앞부분 공백 추가
         for(int i = 1; i < cal.get(Calendar.DAY_OF_WEEK); i++) {
-            adapt.addItem(new DateItem(" "));
+            adapt.addItem(new DateItem(""));
         }
         // 날짜 넣기
         for(int i = 0; i < finddaynum(year, month); i++) {
@@ -137,7 +137,7 @@ public class MonthCalendarFragment extends Fragment {
         // 7*6 맞추기 위해 공백 추가
         int v = 42 - adapt.getCount();
         for(int i = 0; i < v; i++) {
-            adapt.addItem(new DateItem(" "));
+            adapt.addItem(new DateItem(""));
         }
 
         gridview.setAdapter(adapt);
@@ -162,8 +162,8 @@ public class MonthCalendarFragment extends Fragment {
                     // 달력의 날짜
                     FragmentActivity activity = getActivity();
                     if (activity != null) {
-                        ((MainActivity) activity).selecteddate.setAll(Integer.toString(year), Integer.toString(month), (String) textView.getText(), "8");
-                        ((MainActivity) activity).v = gridview.getChildAt(position);
+                        ((MainActivity) activity).selecteddate.setAll(Integer.toString(year), Integer.toString(month), (String) textView.getText(), "8", "month");
+                        ((MainActivity) activity).v = parent.getChildAt(position);
                     }
                 }
             }

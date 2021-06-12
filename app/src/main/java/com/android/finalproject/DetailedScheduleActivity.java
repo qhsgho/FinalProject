@@ -2,8 +2,10 @@ package com.android.finalproject;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.location.Address;
@@ -48,7 +50,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
     EditText mPlace;
     EditText mMemo;
 
-    String _id, title, year, month, date, time_start, time_end, place, memo;
+    String _id, title, year, month, date, time_start, time_end, place, memo, type;
 
     private DBHelper mDbHelper;
 
@@ -71,14 +73,11 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         time_end = intent.getStringExtra("time_end");
         place = intent.getStringExtra("place");
         memo = intent.getStringExtra("memo");
+        type = intent.getStringExtra("type");
 
 
         if(title == null) {
             title = year+"년 "+month+"월 "+date+"일 "+time_start+"시";
-        }
-
-        if(place == null) {
-            place = "hansung";
         }
 
         if(time_end == null) {
@@ -93,9 +92,11 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
 
         TimePicker startTime = (TimePicker) findViewById(R.id.tp_timepicker_start);
         startTime.setHour(Integer.parseInt(time_start));
+        startTime.setMinute(0);
 
         TimePicker endTime = (TimePicker) findViewById(R.id.tp_timepicker_end);
         endTime.setHour(Integer.parseInt(time_end));
+        endTime.setMinute(0);
 
         mYear = year;
         mMonth = month;
@@ -118,6 +119,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
     }
 
 
+
     //버튼 설정
     @RequiresApi(api = Build.VERSION_CODES.M)
     public void btnClick(View view){
@@ -127,16 +129,35 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
             else
                 updateRecord();
 
-            ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
+            if(type.equals("month"))
+                ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
+
+            else
+                ((MainActivity) MainActivity.context).findDateTimeFromDb(mYear, mMonth, mDate);
+
+
             finish();
 
         }else if(view.getId()==R.id.Schedule_Cancle){
 
             finish();
+
         }else if(view.getId()==R.id.Schedule_Delete){
-            deleteRecord();
-            ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
-            finish();
+
+            AlertDialog.Builder confirmDialog = new AlertDialog.Builder(this);
+
+            confirmDialog.setTitle("확인");
+            confirmDialog.setMessage("정말 삭제하시겠습니까?");
+            confirmDialog.setNegativeButton("아니오", null);
+            confirmDialog.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    deleteRecord();
+                    ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
+                    finish();
+                }
+            });
+            confirmDialog.show();
         }
     }
 
@@ -146,6 +167,17 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mMap = googleMap;
         geocoder = new Geocoder(this, Locale.KOREA);
 
+        /*
+        if(place != null) {
+
+            // 좌표(위도, 경도) 생성
+            LatLng point = point;
+
+            // 해당 좌표로 화면 줌
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+        }
+
+         */
 
         // 버튼 이벤트
         search_Btn.setOnClickListener(new Button.OnClickListener(){
@@ -199,7 +231,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
 
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(37.5817891, 127.008175);
-        mMap.addMarker(new MarkerOptions().position(sydney).title(place));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("hansung"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
     }
 

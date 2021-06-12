@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import java.util.Calendar;
 
 public class MonthCalendarAdapter extends FragmentStateAdapter {
-    private static int NUM_ITEMS=40;
+    private static int NUM_ITEMS=20;
     public MonthCalendarAdapter(@NonNull Fragment fragment) {
         super(fragment);
     }
@@ -22,7 +22,7 @@ public class MonthCalendarAdapter extends FragmentStateAdapter {
         year = cal.get(Calendar.YEAR);
         month = cal.get(Calendar.MONTH)+1;
 
-        findSwipeday(position - 20);
+        findSwipeday(position - 10);
         return MonthCalendarFragment.newInstance(year, month);
     }
 
