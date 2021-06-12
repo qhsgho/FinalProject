@@ -20,6 +20,7 @@ public final class UserContract {
         public static final String KEY_TIME_END = "Time_end";
         public static final String KEY_PLACE = "PLACE";
         public static final String KEY_MEMO = "Memo";
+        public static final String KEY_PLACE_POINT = "Place_point";
 
         public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY" + COMMA_SEP +
@@ -30,7 +31,8 @@ public final class UserContract {
                 KEY_TIME_START + TEXT_TYPE + COMMA_SEP +
                 KEY_TIME_END + TEXT_TYPE + COMMA_SEP +
                 KEY_PLACE + TEXT_TYPE + COMMA_SEP +
-                KEY_MEMO + TEXT_TYPE + " )";
+                KEY_MEMO + TEXT_TYPE + COMMA_SEP +
+                KEY_PLACE_POINT + TEXT_TYPE +" )";
         public static final String DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
     }
 }

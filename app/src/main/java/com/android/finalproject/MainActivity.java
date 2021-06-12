@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                     intent.putExtra("time_end", ((Cursor) adapter.getItem(i)).getString(6));
                     intent.putExtra("place", ((Cursor) adapter.getItem(i)).getString(7));
                     intent.putExtra("memo", ((Cursor) adapter.getItem(i)).getString(8));
+                    intent.putExtra("place_point", ((Cursor) adapter.getItem(i)).getString(9));
                     intent.putExtra("type", ("month"));
                     startActivity(intent); //액티비티 열기
                 }
@@ -204,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
                             intent.putExtra("time_end", ((Cursor) adapter.getItem(which)).getString(6));
                             intent.putExtra("place", ((Cursor) adapter.getItem(which)).getString(7));
                             intent.putExtra("memo", ((Cursor) adapter.getItem(which)).getString(8));
+                            intent.putExtra("place_point", ((Cursor) adapter.getItem(which)).getString(9));
                             intent.putExtra("type", ("month"));
                             startActivity(intent); //액티비티 열기
 

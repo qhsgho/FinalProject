@@ -49,8 +49,9 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
     int mTimeEnd;
     EditText mPlace;
     EditText mMemo;
+    String mPlacePoint;
 
-    String _id, title, year, month, date, time_start, time_end, place, memo, type;
+    String _id, title, year, month, date, time_start, time_end, place, memo, place_point, type;
 
     private DBHelper mDbHelper;
 
@@ -73,6 +74,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         time_end = intent.getStringExtra("time_end");
         place = intent.getStringExtra("place");
         memo = intent.getStringExtra("memo");
+        place_point = intent.getStringExtra("place_point");
         type = intent.getStringExtra("type");
 
 
@@ -167,17 +169,30 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mMap = googleMap;
         geocoder = new Geocoder(this, Locale.KOREA);
 
-        /*
-        if(place != null) {
+        if(place_point.equals("") || place_point == null) {
+            // Add a marker in Sydney and move the camera
+            LatLng sydney = new LatLng(37.5817891, 127.008175);
+            mMap.addMarker(new MarkerOptions().position(sydney).title("hansung"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
 
-            // 좌표(위도, 경도) 생성
-            LatLng point = point;
-
-            // 해당 좌표로 화면 줌
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+            mPlacePoint = "";
         }
 
-         */
+        else {
+            String tempstring;
+
+            tempstring = place_point.replace("lat/lng: (", "");
+            tempstring = tempstring.replace(")", "");
+
+            String[] latlong = tempstring.split(",");
+            double latitude = Double.parseDouble(latlong[0]);
+            double longitude = Double.parseDouble(latlong[1]);
+
+            LatLng point = new LatLng(latitude, longitude);
+
+            mMap.addMarker(new MarkerOptions().position(point).title(place));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
+        }
 
         // 버튼 이벤트
         search_Btn.setOnClickListener(new Button.OnClickListener(){
@@ -221,18 +236,13 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
                         mMap.addMarker(mOptions2);
                         // 해당 좌표로 화면 줌
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+
+                        mPlacePoint = point.toString();
                     }
                 }
             }
-
-
         });
-        ////////////////////
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(37.5817891, 127.008175);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("hansung"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -246,7 +256,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         TimePicker endTime = (TimePicker) findViewById(R.id.tp_timepicker_end);
         mTimeEnd = endTime.getHour();
 
-        mDbHelper.insertUserBySQL(mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString());
+        mDbHelper.insertUserBySQL(mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString(), mPlacePoint);
 
     }
 
@@ -261,7 +271,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         TimePicker endTime = (TimePicker) findViewById(R.id.tp_timepicker_end);
         mTimeEnd = endTime.getHour();
 
-        mDbHelper.updateUserBySQL(_id, mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString());
+        mDbHelper.updateUserBySQL(_id, mTitle.getText().toString(), mYear, mMonth, mDate, Integer.toString(mTimeStart), Integer.toString(mTimeEnd), mPlace.getText().toString(), mMemo.getText().toString(), mPlacePoint);
     }
 
     private void deleteRecord() {

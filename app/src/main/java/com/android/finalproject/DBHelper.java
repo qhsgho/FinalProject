@@ -28,10 +28,10 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertUserBySQL(String title, String year, String month, String date, String time_start, String time_end, String place, String memo) {
+    public void insertUserBySQL(String title, String year, String month, String date, String time_start, String time_end, String place, String memo, String place_point) {
         try {
             String sql = String.format (
-                    "INSERT INTO %s (%s, %s, %s, %s, %s, %s, %s, %s, %s) VALUES (NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
+                    "INSERT INTO %s (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) VALUES (NULL, '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')",
                     UserContract.Users.TABLE_NAME,
                     UserContract.Users._ID,
                     UserContract.Users.KEY_TITLE,
@@ -42,6 +42,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     UserContract.Users.KEY_TIME_END,
                     UserContract.Users.KEY_PLACE,
                     UserContract.Users.KEY_MEMO,
+                    UserContract.Users.KEY_PLACE_POINT,
                     title,
                     year,
                     month,
@@ -49,7 +50,8 @@ public class DBHelper extends SQLiteOpenHelper {
                     time_start,
                     time_end,
                     place,
-                    memo);
+                    memo,
+                    place_point);
 
             getWritableDatabase().execSQL(sql);
         } catch (SQLException e) {
@@ -151,10 +153,10 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void updateUserBySQL(String _id, String title, String year, String month, String date, String time_start, String time_end, String place, String memo) {
+    public void updateUserBySQL(String _id, String title, String year, String month, String date, String time_start, String time_end, String place, String memo, String place_point) {
         try {
             String sql = String.format (
-                    "UPDATE  %s SET %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
+                    "UPDATE  %s SET %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s', %s = '%s' WHERE %s = %s",
                     UserContract.Users.TABLE_NAME,
                     UserContract.Users.KEY_TITLE, title,
                     UserContract.Users.KEY_YEAR, year,
@@ -164,6 +166,7 @@ public class DBHelper extends SQLiteOpenHelper {
                     UserContract.Users.KEY_TIME_END, time_end,
                     UserContract.Users.KEY_PLACE, place,
                     UserContract.Users.KEY_MEMO, memo,
+                    UserContract.Users.KEY_PLACE_POINT, place_point,
                     UserContract.Users._ID, _id) ;
 
             getWritableDatabase().execSQL(sql);
