@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(selecteddate.getDate() != "") {
+                if(!selecteddate.getDate().equals("")) {
 
                     if(selecteddate.getType().equals("week")) {
                         ListView lv = (ListView) v.findViewById(R.id.plan_listview);

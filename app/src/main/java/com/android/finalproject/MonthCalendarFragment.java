@@ -118,12 +118,12 @@ public class MonthCalendarFragment extends Fragment {
         // 달의 첫번째 요일 알기 위함
         cal.set(year, month-1, 1);
 
-        // 데이터 있음?
+        // 데이터 있는지 확인
         FragmentActivity activity = getActivity();
-        boolean a = ((MainActivity) activity).hasMonth(Integer.toString(year), Integer.toString(month));
+        boolean isdate = ((MainActivity) activity).hasMonth(Integer.toString(year), Integer.toString(month));
 
         GridView gridview = (GridView) calView.findViewById(R.id.calendar_gridview);
-        GridListAdapter adapt = new GridListAdapter(year, month, cal.get(Calendar.DAY_OF_WEEK) - 1, finddaynum(year, month), a);
+        GridListAdapter adapt = new GridListAdapter(year, month, cal.get(Calendar.DAY_OF_WEEK) - 1, finddaynum(year, month), isdate);
 
         // 빈 요일만큼 달의 앞부분 공백 추가
         for(int i = 1; i < cal.get(Calendar.DAY_OF_WEEK); i++) {
@@ -141,7 +141,6 @@ public class MonthCalendarFragment extends Fragment {
         }
 
         gridview.setAdapter(adapt);
-//        gridview.setFocusable(true);
 
         // 클릭 이벤트 처리
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
