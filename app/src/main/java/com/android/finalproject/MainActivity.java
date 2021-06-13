@@ -254,30 +254,6 @@ public class MainActivity extends AppCompatActivity {
         lv.setFocusable(false);
         lv.setEnabled(false);
         lv.setClickable(false);
-
-
-        /*
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
-                R.layout.plan_griditem, cursor, new String[]{
-                UserContract.Users.KEY_TITLE},
-                new int[]{R.id.plan_title}, 0);
-
-        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
-
-        // start_time
-        cursor.getString(5);
-
-        // end_time
-        cursor.getString(6);
-
-        lv.setAdapter(adapter);
-
-        lv.setFocusable(false);
-        lv.setEnabled(false);
-        lv.setClickable(false);
-
-         */
     }
 
     public boolean hasTime (String year, String month, String date, String start_time) {
@@ -292,8 +268,8 @@ public class MainActivity extends AppCompatActivity {
         return mDbHelper.hasMonth(year, month);
     }
 
-    public int dateCount (String year, String month, String date) {
-        return mDbHelper.dateCount(year, month, date);
+    public boolean hastimeposition (String year, String month, String date, String position) {
+        return mDbHelper.getTimeDateWithPositionBySQL(year, month, date, position);
     }
 
 

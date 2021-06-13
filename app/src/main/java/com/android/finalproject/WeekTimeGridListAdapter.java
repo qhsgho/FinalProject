@@ -13,21 +13,12 @@ public class WeekTimeGridListAdapter extends BaseAdapter {
     ArrayList<DateItem> items = new ArrayList<DateItem>();
     Context context;
 
-    int year;
-    int month;
-    int date;
-    int lastday;
-    boolean isdayofweek[];
+    boolean[] isdayofweek;
+    WeekDateItem[] weekDateItem;
 
-    WeekDateItem weekDateItem[];
+    public WeekTimeGridListAdapter(boolean[] isdayofweek, WeekDateItem[] weekDateItems) {
 
-    public WeekTimeGridListAdapter(int year, int month, int sundate, int lastday, boolean[] isdayofweek, WeekDateItem[] weekDateItems) {
-        this.year = year;
-        this.month = month;
-        this.date = sundate;
-        this.lastday = lastday;
         this.isdayofweek = isdayofweek;
-
         this.weekDateItem = weekDateItems;
     }
 
@@ -67,14 +58,23 @@ public class WeekTimeGridListAdapter extends BaseAdapter {
         daypos = position % 7;
 
         if(isdayofweek[daypos]) {
-            int stime = position / 7;
+            int time_start = position / 7;
 
             if(((MainActivity) MainActivity.context).hasTime(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
-                    Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(stime))) {
+                    Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start))) {
+
+                /*
+                if(((MainActivity) MainActivity.context).hastimeposition(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
+                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start))) {
+                    int a = 15;
+                }
+
+                 */
+
 
                 ((MainActivity) MainActivity.context).v = calView;
                 ((MainActivity) MainActivity.context).findTimeFromDb(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
-                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(stime), Integer.toString(stime+1));
+                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start), Integer.toString(time_start+1));
 
             }
         }

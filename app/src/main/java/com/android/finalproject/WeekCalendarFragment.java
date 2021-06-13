@@ -106,47 +106,19 @@ public class WeekCalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View calView = inflater.inflate(R.layout.fragment_week_calendar, container, false);
 
-        WeekDateItem weekDateItem[] = new WeekDateItem[7];
+        WeekDateItem[] weekDateItem = new WeekDateItem[7];
 
         int weeksundate = sundate;
         int lastday = finddaynum(year, month);
 
-        FragmentActivity activity = getActivity();
-
         // 주간 달력에 넣어야할 데이터가 있는지 확인
-        boolean isdayofweek[] = new boolean[7];
-        int yearfordate = year;
-        int monthfordate = month;
-        int sundatefordate = sundate;
-        boolean isdate = false;
-
-        if (activity != null) {
-            for(int i = 0; i < 7; i++) {
-
-                sundatefordate++;
-
-                if (sundatefordate > lastday) {
-                    sundatefordate = 1;
-
-                    if (monthfordate == 12) {
-                        yearfordate++;
-                        monthfordate = 1;
-                    } else {
-                        monthfordate++;
-                    }
-                }
-
-                if(isdayofweek[i]) {
-                    isdate = true;
-                }
-            }
-        }
-
+        boolean[] isdayofweek = new boolean[7];
 
         // 요일 그리드 뷰
         GridView gridview = (GridView) calView.findViewById(R.id.calendar_gridview_week);
         WeekGridListAdapter adapt = new WeekGridListAdapter();
 
+        FragmentActivity activity = getActivity();
 
         int restbox = 1;
         for(int i = 0; i < 7; i++) {
@@ -157,13 +129,13 @@ public class WeekCalendarFragment extends Fragment {
                 if (month == 12) {
                     weekDateItem[i].setYear(year+1);
                     weekDateItem[i].setMonth(1);
+
                 } else {
                     weekDateItem[i].setYear(year);
                     weekDateItem[i].setMonth(month+1);
                 }
 
                 adapt.addItem(new DateItem(Integer.toString(restbox)));
-
                 weekDateItem[i].setDate(restbox);
 
                 restbox++;
@@ -178,6 +150,7 @@ public class WeekCalendarFragment extends Fragment {
 
             isdayofweek[i] = ((MainActivity) activity).hasDate(Integer.toString(weekDateItem[i].getYear()), Integer.toString(weekDateItem[i].getMonth()),
                     Integer.toString(weekDateItem[i].getDate()));
+
             weeksundate++;
         }
 
@@ -190,14 +163,12 @@ public class WeekCalendarFragment extends Fragment {
         // 격자부분 그리드 뷰
         ExpandableHeightGridView gridview_timegrid = (ExpandableHeightGridView) calView.findViewById(R.id.calendar_gridview_week_timegrid);
         gridview_timegrid.setExpanded(true);
-        WeekTimeGridListAdapter adapt_timegrid = new WeekTimeGridListAdapter(year, month, sundate, lastday, isdayofweek, weekDateItem);
-
+        WeekTimeGridListAdapter adapt_timegrid = new WeekTimeGridListAdapter(isdayofweek, weekDateItem);
 
 
         for(int i = 0; i < 168; i++) {
             adapt_timegrid.addItem(new DateItem(""));
         }
-
 
         for(int i = 0; i < 24; i++) {
             adapt_timeline.addItem(new DateItem(""+i));
@@ -211,7 +182,6 @@ public class WeekCalendarFragment extends Fragment {
 
         // 격자 부분
         gridview_timegrid.setAdapter(adapt_timegrid);
-
         gridview_timegrid.setFocusable(true);
 
         // 클릭 이벤트 처리 달력

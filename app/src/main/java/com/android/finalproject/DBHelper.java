@@ -79,6 +79,23 @@ public class DBHelper extends SQLiteOpenHelper {
         return getReadableDatabase().rawQuery(sql,null);
     }
 
+    public boolean getTimeDateWithPositionBySQL(String year, String month, String date, String position) {
+        String sql = "Select * FROM " + UserContract.Users.TABLE_NAME + " Where " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
+                "' AND " + UserContract.Users.KEY_DATE + "= '"+ date + "' AND " + Integer.parseInt(UserContract.Users.KEY_TIME_START) + "<=" + Integer.parseInt(position) +
+                " AND " + Integer.parseInt(UserContract.Users.KEY_TIME_END) + ">" + Integer.parseInt(position);
+
+        Cursor cursor = getReadableDatabase().rawQuery(sql,null);
+
+        if(cursor.getCount() <= 0){
+            cursor.close();
+            return false;
+        }
+
+        cursor.close();
+
+        return true;
+    }
+
     public boolean hasDate(String year, String month, String date) {
 
         String sql = "SELECT * FROM " + UserContract.Users.TABLE_NAME + " WHERE " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
