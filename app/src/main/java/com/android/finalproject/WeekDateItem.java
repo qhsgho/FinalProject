@@ -5,16 +5,6 @@ public class WeekDateItem {
     int month;
     int date;
 
-    /*
-    public WeekDateItem(int year, int month, int date) {
-
-        this.year = year;
-        this.month = month;
-        this.date = date;
-    }
-
-     */
-
     public int getYear() {
         return year;
     }

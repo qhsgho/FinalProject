@@ -152,7 +152,7 @@ public class MonthCalendarFragment extends Fragment {
                 LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.item_text_background);
                 TextView textView = (TextView) view.findViewById(R.id.item_text);
 
-                if((String) textView.getText() != " ") {
+                if((String) textView.getText() != "") {
                     if(previousView != null) {
                         previousView.setBackgroundColor(Color.WHITE);
                     }

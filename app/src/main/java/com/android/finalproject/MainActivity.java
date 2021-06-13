@@ -1,14 +1,12 @@
 package com.android.finalproject;
 
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,20 +20,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
 public class MainActivity extends AppCompatActivity {
     SelectedDate selecteddate = new SelectedDate("", "", "", "", "");
@@ -151,7 +143,6 @@ public class MainActivity extends AppCompatActivity {
         ListView lv = (ListView) v.findViewById(R.id.plan_listview);
 
         lv.setAdapter(adapter);
-
         lv.setFocusable(false);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -213,34 +204,14 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     selectDialog.show();
-
                 }
-
             }
         });
     }
 
-    public void findDateTimeFromDb (String year, String month, String date) {
+    public void findTimeFromDb (String year, String month, String date, String stime) {
 
-        Cursor cursor = mDbHelper.getDateBySQL(year, month, date);
-
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
-                R.layout.plan_griditem, cursor, new String[]{
-                UserContract.Users.KEY_TITLE},
-                new int[]{R.id.plan_title}, 0);
-
-        ListView lv = (ListView) v.findViewById(R.id.plan_listview);
-
-        lv.setAdapter(adapter);
-
-        lv.setFocusable(false);
-        lv.setEnabled(false);
-        lv.setClickable(false);
-    }
-
-    public void findTimeFromDb (String year, String month, String date, String stime, String etime) {
-
-        Cursor cursor = mDbHelper.getTimeDateBySQL(year, month, date, stime, etime);
+        Cursor cursor = mDbHelper.getTimeDateBySQL(year, month, date, stime);
 
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(getApplicationContext(),
                 R.layout.plan_griditem, cursor, new String[]{
@@ -267,12 +238,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean hasMonth (String year, String month) {
         return mDbHelper.hasMonth(year, month);
     }
-
-    public boolean hastimeposition (String year, String month, String date, String position) {
-        return mDbHelper.getTimeDateWithPositionBySQL(year, month, date, position);
-    }
-
-
 
 }
 

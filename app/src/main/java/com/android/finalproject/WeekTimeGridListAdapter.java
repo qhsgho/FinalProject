@@ -63,18 +63,9 @@ public class WeekTimeGridListAdapter extends BaseAdapter {
             if(((MainActivity) MainActivity.context).hasTime(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
                     Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start))) {
 
-                /*
-                if(((MainActivity) MainActivity.context).hastimeposition(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
-                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start))) {
-                    int a = 15;
-                }
-
-                 */
-
-
                 ((MainActivity) MainActivity.context).v = calView;
                 ((MainActivity) MainActivity.context).findTimeFromDb(Integer.toString(weekDateItem[daypos].getYear()), Integer.toString(weekDateItem[daypos].getMonth()),
-                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start), Integer.toString(time_start+1));
+                        Integer.toString(weekDateItem[daypos].getDate()), Integer.toString(time_start));
 
             }
         }

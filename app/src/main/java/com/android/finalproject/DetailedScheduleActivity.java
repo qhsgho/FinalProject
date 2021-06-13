@@ -135,8 +135,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
                 ((MainActivity) MainActivity.context).findDateFromDb(mYear, mMonth, mDate);
 
             else
-                ((MainActivity) MainActivity.context).findDateTimeFromDb(mYear, mMonth, mDate);
-
+                ((MainActivity) MainActivity.context).findTimeFromDb(mYear, mMonth, mDate, Integer.toString(mTimeStart));
 
             finish();
 
@@ -172,10 +171,9 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         if(place_point == null) {
 
             LatLng sydney = new LatLng(37.5817891, 127.008175);
-            mMap.addMarker(new MarkerOptions().position(sydney).title("hansung"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15));
 
-            mPlacePoint = sydney.toString();;
+            place_point = sydney.toString();;
         }
 
         else {
@@ -237,7 +235,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
                         // 해당 좌표로 화면 줌
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
 
-                        mPlacePoint = point.toString();
+                        place_point = point.toString();
                     }
                 }
             }
@@ -250,6 +248,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mTitle = (EditText) findViewById(R.id.Schedule_Title);
         mPlace = (EditText) findViewById(R.id.GoogleMap_EditText);
         mMemo = (EditText) findViewById(R.id.memo);
+        mPlacePoint = place_point;
 
         TimePicker startTime = (TimePicker) findViewById(R.id.tp_timepicker_start);
         mTimeStart = startTime.getHour();
@@ -265,6 +264,7 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
         mTitle = (EditText) findViewById(R.id.Schedule_Title);
         mPlace = (EditText) findViewById(R.id.GoogleMap_EditText);
         mMemo = (EditText) findViewById(R.id.memo);
+        mPlacePoint = place_point;
 
         TimePicker startTime = (TimePicker) findViewById(R.id.tp_timepicker_start);
         mTimeStart = startTime.getHour();
@@ -277,7 +277,6 @@ public class DetailedScheduleActivity extends AppCompatActivity implements OnMap
     private void deleteRecord() {
 
         mDbHelper.deleteUserBySQL(_id);
-
     }
 
 }

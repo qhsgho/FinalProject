@@ -71,10 +71,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return getReadableDatabase().rawQuery(sql,null);
     }
 
-    public Cursor getTimeDateBySQL(String year, String month, String date, String time_start, String time_end) {
+    public Cursor getTimeDateBySQL(String year, String month, String date, String time_start) {
         String sql = "Select * FROM " + UserContract.Users.TABLE_NAME + " Where " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
-                "' AND " + UserContract.Users.KEY_DATE + "= '"+ date + "' AND " + UserContract.Users.KEY_TIME_START + "= '"+ time_start +"' AND " + UserContract.Users.KEY_TIME_END +
-                "= '"+ time_end +"'";
+                "' AND " + UserContract.Users.KEY_DATE + "= '"+ date + "' AND " + UserContract.Users.KEY_TIME_START + "= '"+ time_start +"'";
 
         return getReadableDatabase().rawQuery(sql,null);
     }
@@ -128,16 +127,6 @@ public class DBHelper extends SQLiteOpenHelper {
         cursor.close();
 
         return true;
-    }
-
-    public int dateCount(String year, String month, String date) {
-
-        String sql = "SELECT * FROM " + UserContract.Users.TABLE_NAME + " WHERE " + UserContract.Users.KEY_YEAR + "= '"+ year +"' AND " + UserContract.Users.KEY_MONTH + "= '"+ month +
-                "' AND " + UserContract.Users.KEY_DATE + "= '"+ date +"'";
-
-        Cursor cursor = getReadableDatabase().rawQuery(sql,null);
-
-        return cursor.getCount();
     }
 
     public boolean hasMonth(String year, String month) {
